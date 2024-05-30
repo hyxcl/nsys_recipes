@@ -183,7 +183,6 @@ class ComputeCommTimeUtilMap(recipe.Recipe):
                     "Exclude Compute Overlap Duration",
                     "Rank",
                     "StreamID",
-                    "SubRange",
                 ]
             ]
             .set_index("Name")
@@ -196,22 +195,14 @@ class ComputeCommTimeUtilMap(recipe.Recipe):
         comm_sum = trace_gdf["Communication Sum"].sum()
         compute_sum = trace_gdf["Compute Sum"].sum()
         
-        stream_gdf = trace_df.groupby(["StreamID","SubRange"])
+        if 'SubRange' in trace_df.columns:
+            stream_gdf = trace_df.groupby(["StreamID","SubRange"])
+        else:
+            stream_gdf = trace_df.groupby("StreamID")
         stream_duration = stream_gdf["Duration"].sum()
         stream_comm_sum = stream_gdf["Communication Sum"].sum()
         stream_compute_sum = stream_gdf["Compute Sum"].sum()
         stream_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum()
-        
-        '''
-        stream_duration = stream_gdf["Duration"].sum().groupby(level=0).sum()
-        stream_subrange_duration = stream_gdf["Duration"].sum()
-        stream_comm_sum = stream_gdf["Communication Sum"].sum().groupby(level=0).sum()
-        stream_subrange_comm_sum = stream_gdf["Communication Sum"].sum()
-        stream_compute_sum = stream_gdf["Compute Sum"].sum().groupby(level=0).sum()
-        stream_subrange_compute_sum = stream_gdf["Compute Sum"].sum()
-        stream_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum().groupby(level=0).sum()
-        stream_subrange_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum()
-        '''
         
         grouped_trace_df = pd.DataFrame(
             {
