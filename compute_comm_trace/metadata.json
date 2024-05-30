@@ -1,6 +1,6 @@
 {
-    "module_name": "nccl_gpu_overlap_trace",
-    "display_name": "NCCL GPU Overlap Trace",
+    "module_name": "compute_comm_trace",
+    "display_name": "Compute Communication Overlap Trace",
     "description": [
         "This recipe calculates the percentage of overlap for communication and",
         "compute kernels."

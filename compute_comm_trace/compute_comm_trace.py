@@ -20,7 +20,7 @@ from nsys_recipe.lib.args import Option
 from nsys_recipe.log import logger
 
 
-class NcclGpuTimeUtilMap(recipe.Recipe):
+class ComputeCommTimeUtilMap(recipe.Recipe):
     @staticmethod
     def _mapper_func(report_path, parsed_args):
         service = DataService(report_path)
@@ -132,6 +132,7 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         df = pd.concat(results, ignore_index=True).rename(columns=name_dict)[
             name_dict.values()
         ]
+        df = data_utils.add_time_range_mask(df,parsed_args.subtimerange)
         filename = Path(report_path).stem
 
         return filename, df
@@ -182,6 +183,7 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
                     "Exclude Compute Overlap Duration",
                     "Rank",
                     "StreamID",
+                    "SubRange",
                 ]
             ]
             .set_index("Name")
@@ -194,12 +196,23 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         comm_sum = trace_gdf["Communication Sum"].sum()
         compute_sum = trace_gdf["Compute Sum"].sum()
         
-        stream_gdf = trace_df.groupby("StreamID")
+        stream_gdf = trace_df.groupby(["StreamID","SubRange"])
         stream_duration = stream_gdf["Duration"].sum()
         stream_comm_sum = stream_gdf["Communication Sum"].sum()
         stream_compute_sum = stream_gdf["Compute Sum"].sum()
         stream_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum()
-
+        
+        '''
+        stream_duration = stream_gdf["Duration"].sum().groupby(level=0).sum()
+        stream_subrange_duration = stream_gdf["Duration"].sum()
+        stream_comm_sum = stream_gdf["Communication Sum"].sum().groupby(level=0).sum()
+        stream_subrange_comm_sum = stream_gdf["Communication Sum"].sum()
+        stream_compute_sum = stream_gdf["Compute Sum"].sum().groupby(level=0).sum()
+        stream_subrange_compute_sum = stream_gdf["Compute Sum"].sum()
+        stream_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum().groupby(level=0).sum()
+        stream_subrange_exclude_compute_sum = stream_gdf["Exclude Compute Overlap Duration"].sum()
+        '''
+        
         grouped_trace_df = pd.DataFrame(
             {
                 "Count": trace_gdf.size(),
@@ -260,6 +273,7 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         parser.add_recipe_argument(Option.START)
         parser.add_recipe_argument(Option.END)
         parser.add_recipe_argument(Option.CSV)
+        parser.add_recipe_argument(Option.SUBTIMERANGE)
         parser.add_recipe_argument(
             "--divisor",
             type=args.process_integer(1),
