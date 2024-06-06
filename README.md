@@ -1,4 +1,5 @@
 # nsys_recipes
+this recipe is tested in nsight systems version 24.3.1 and 24.4.1
 
 ## Usage
 clone this repository and add it to the package
