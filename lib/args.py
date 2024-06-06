@@ -24,8 +24,8 @@ def range_type(value):
     for valuei in value.split(','):
         try:
             start, end = map(float, valuei.split('-'))
-            start = start * 1e9
-            end = end * 1e9
+            #start = start * 1e9
+            #end = end * 1e9
             if start > end:
                 raise argparse.ArgumentTypeError(f"Invalid range: {valuei}")
             rangelist.append((start, end))
@@ -372,7 +372,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 "--subtimerange",
                 metavar="subrange",
                 type=range_type,
-                help="time range used for filtering in seconds, --subtimerange 10.452-10.587,10.601-10.882, \n"
+                help="time range used for filtering in nanoseconds, --subtimerange 10.452e9-10.587e9,10.601e9-10.882e9, \n"
                 "it means you want to stat the time range from 10.452s to 10.587s , and also 10.601s to 10.882s",
                 **kwargs,
             )
