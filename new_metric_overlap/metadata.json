@@ -1,0 +1,9 @@
+{
+    "module_name": "new_metric_overlap",
+    "script_name": "new_metric_overlap",
+    "display_name": "Overlap metric of compute and communicate",
+    "description": [
+        "This recipe shows percentage of compute and communicate in ranks.",
+        " (NewMetricOverlap)"
+    ]
+}
