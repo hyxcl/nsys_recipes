@@ -7,9 +7,10 @@ the compute_comm_trace recipe is modified from nccl_gpu_overlap_trace, add suppo
 it output the static of compute and communication of different stream. users have to manually set TP, DP, PP stream id for plot.
 
 the dataframe of different stream:
-the subrange is shown when you use "--subtimerange", the subrange 1,2 is the first and second time range you input. the subrange 0 is the total "duration - subrange duration". 
+the subrange is shown when you use "--subtimerange", the subrange 1,2 is the first and second time range you input. the subrange 0 is the total "duration - subrange duration".  
 ![A graph that shows compute_comm_trace dataframe](imgs/compute_comm_streamdf.png "Result of compute_comm_trace.")
 the pie of compute, and communication introduced by different parallelism:
+in the pie, the communication percent has exclude the communication-compute overlap time. and for communication-communication overlap, it will be counted twice.
 ![A graph that shows compute_comm_trace results](imgs/compute_comm_trace.png "Result of compute_comm_trace.")  
 
 **new_metric_overlap**:
