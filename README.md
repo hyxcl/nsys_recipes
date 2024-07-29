@@ -1,27 +1,25 @@
 # nsys_recipes
 ## Introduction
-these recipes are a supplement to nsight system‘s build in multi-report recipe.
-currently we have two custom recipe
-**compute_comm_trace**:
-the compute_comm_trace recipe is modified from nccl_gpu_overlap_trace, add support for show the percent of compute, TP communication, PP communication, DP communication and others.
-it output the static of compute and communication of different stream. users have to manually set TP, DP, PP stream id for plot.
-
-the dataframe of different stream:
-the subrange is shown when you use "--subtimerange", the subrange 1,2 is the first and second time range you input. the subrange 0 is the total "duration - subrange duration".  
-![A graph that shows compute_comm_trace dataframe](imgs/compute_comm_streamdf.png "Result of compute_comm_trace.")
-the pie of compute, and communication introduced by different parallelism:
-in the pie, the communication percent has exclude the communication-compute overlap time. and for communication-communication overlap, it will be counted twice.
+these recipes are a supplement to nsight system‘s build in multi-report recipe. currently we have two custom recipe.  
+**compute_comm_trace**:  
+the compute_comm_trace recipe is modified from nccl_gpu_overlap_trace, add support for show the percent of compute, TP communication, PP communication, DP communication and others.  
+it output the static of compute and communication of different stream. users have to manually set TP, DP, PP stream id for plot.  
+the subrange is shown when you use "--subtimerange", the subrange 1,2 is the first and second time range you input. the subrange 0 is the total "duration - subrange duration".   
+an example of dataframe of different stream:   
+![A graph that shows compute_comm_trace dataframe](imgs/compute_comm_streamdf.png "Result of compute_comm_trace.") 
+in the pie, the communication percent has exclude the communication-compute overlap time. and for communication-communication overlap, it will be counted twice.  
+an example pie of compute, and communication introduced by different parallelism: 
 ![A graph that shows compute_comm_trace results](imgs/compute_comm_trace.png "Result of compute_comm_trace.")  
 
-**new_metric_overlap**:
-This recipe is simply analysised from the reports and calculate how many time spend on each category:
-- Communication (mainly NCCL calls)
-- Computation (math computation or other GPU kernel functions)
-- Overlap (where both communication kernels and computation kernels are active at the same duration)
-- Empty (the time span which no GPU kernels running)
+**new_metric_overlap**:  
+This recipe is simply analysised from the reports and calculate how many time spend on each category:  
+- Communication (mainly NCCL calls)  
+- Computation (math computation or other GPU kernel functions)  
+- Overlap (where both communication kernels and computation kernels are active at the same duration)  
+- Empty (the time span which no GPU kernels running)  
 
-![A bar graph that shows running seconds for each category of kernels](imgs/nsys-ui-report.png "Result of analysis multinode report.")
-this recipe is tested in nsight systems version 24.3.1 and 24.4.1
+![A bar graph that shows running seconds for each category of kernels](imgs/nsys-ui-report.png "Result of analysis multinode report.")  
+this recipe is tested in nsight systems version 24.3.1 and 24.4.1  
 
 ## Prerequisites
 
