@@ -1,11 +1,16 @@
-# about the two nsys_recipes
-this recipe is tested in nsight systems version 24.3.1 and 24.4.1
+# nsys_recipes
+## Introduction
+these recipes are a supplement to nsight system‘s build in multi-report recipe.
+currently we have two custom recipe
+**compute_comm_trace**:
+the compute_comm_trace recipe is modified from nccl_gpu_overlap_trace, add support for show the percent of compute, TP communication, PP communication, DP communication and others.
+it output the static of compute and communication of different stream. users have to manually set TP, DP, PP stream id for plot.
+the dataframe of different stream:
+![A graph that shows compute_comm_trace dataframe](imgs/compute_comm_streamdf.png "Result of compute_comm_trace.")
+the pie of compute, and communication introduced by different parallelism:
+![A graph that shows compute_comm_trace results](imgs/compute_comm_trace.png "Result of compute_comm_trace.")  
 
-for compute_comm_trace:
-this is modified from nccl_gpu_overlap_trace, add support for show the percent of compute, TP communication, PP communication, DP communication and others.
-![A graph that shows compute_comm_trace results](imgs/compute_comm_trace.png "Result of compute_comm_trace.")
-
-for new_metric_overlap
+**new_metric_overlap**:
 This recipe is simply analysised from the reports and calculate how many time spend on each category:
 - Communication (mainly NCCL calls)
 - Computation (math computation or other GPU kernel functions)
@@ -13,7 +18,7 @@ This recipe is simply analysised from the reports and calculate how many time sp
 - Empty (the time span which no GPU kernels running)
 
 ![A bar graph that shows running seconds for each category of kernels](imgs/nsys-ui-report.png "Result of analysis multinode report.")
-
+this recipe is tested in nsight systems version 24.3.1 and 24.4.1
 
 ## Prerequisites
 
