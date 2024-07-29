@@ -5,6 +5,7 @@ currently we have two custom recipe
 **compute_comm_trace**:
 the compute_comm_trace recipe is modified from nccl_gpu_overlap_trace, add support for show the percent of compute, TP communication, PP communication, DP communication and others.
 it output the static of compute and communication of different stream. users have to manually set TP, DP, PP stream id for plot.
+
 the dataframe of different stream:
 ![A graph that shows compute_comm_trace dataframe](imgs/compute_comm_streamdf.png "Result of compute_comm_trace.")
 the pie of compute, and communication introduced by different parallelism:
