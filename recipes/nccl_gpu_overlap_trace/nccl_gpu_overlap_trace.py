@@ -196,6 +196,7 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         type_merge_dfs = [df.assign(Rank=rank) for rank, df in enumerate(type_merge_dfs)]
         type_merge_df = pd.concat(type_merge_dfs)
         type_merge_df["Duration"] = type_merge_df["end"] - type_merge_df["start"]
+        type_merge_df["shortName"] = type_merge_df["shortName"].replace("nccl", "Communication")
         type_merge_df = type_merge_df.groupby("shortName")
         type_merge_df_duration = type_merge_df["Duration"].sum()
         type_merge_df_compute_sum = type_merge_df["overlap_sum"].sum()
