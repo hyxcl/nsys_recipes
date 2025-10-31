@@ -12,7 +12,9 @@ the nccl_gpu_overlap_trace is modified version from original nccl_gpu_overlap_tr
 - Kernel overlao matrix
 
 1. communication compute overall, a example output like bellow:
-in this overall part, the compute, communication and overlap duration can be considered as a projection duration. for example if 2 communication kernel has some overlap, the duration is considered only once in nccl. and the overlaped duration is the overlaped duration across compute and communication.
+in this part, compute, communication and overlap duration can be considered as a projection duration. for example if 2 communication kernel has some overlap, the duration is considered only once in nccl. and the overlaped duration is the overlaped duration across compute and communication.
+in the "all" streamId part, it's a overall of all streams.
+in the specific streamId part, we only summary the communication in each stream. it's for user to know the communication of different parallelism.  
 ![A graph that shows compute_comm_overall](imgs/communication_compute_overall.png "Result of overall overlap.") 
 
 2. Grouped Traces v2, a example output like bellow:

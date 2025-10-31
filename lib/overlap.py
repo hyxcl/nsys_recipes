@@ -352,7 +352,7 @@ def merge_overlapping_ranges_by_name(df, self_overlapped_duration=False):
     final_df = pd.DataFrame(result_rows)
     return final_df
 
-def merge_by_type(df):
+def merge_by_type(df, streamid=False):
     """Merge overlapping ranges for the same type.
 
     """
@@ -360,16 +360,25 @@ def merge_by_type(df):
     final_df=pd.DataFrame()
     result_rows = []
     for name, group in df.groupby('type'):
-        # Use group_overlapping_ranges to assign group identifiers
-        group_with_groups = group.assign(groups=group_overlapping_ranges(group))
-
-        # Group by the assigned groups and consolidate ranges
-        consolidated = group_with_groups.groupby('groups').agg({
-            'type': 'first',
-            'start': 'min',
-            'end': 'max'
-        }).reset_index()
-        result_rows.extend(consolidated.drop(columns=['groups']).to_dict(orient='records'))
+        if streamid:
+            for stream_id, stream_group in group.groupby('streamId'):
+                stream_group_with_groups = stream_group.assign(groups=group_overlapping_ranges(stream_group))
+                stream_consolidated = stream_group_with_groups.groupby('groups').agg({
+                    'type': 'first',
+                    'start': 'min',
+                    'end': 'max' ,
+                    'streamId': 'first'
+                }).reset_index()
+                result_rows.extend(stream_consolidated.drop(columns=['groups']).to_dict(orient='records'))
+        else:
+            group_with_groups = group.assign(groups=group_overlapping_ranges(group))    
+            consolidated = group_with_groups.groupby('groups').agg({
+                'type': 'first',
+                'start': 'min',
+                'end': 'max' ,
+            }).reset_index()
+            consolidated['streamId'] = 'all'
+            result_rows.extend(consolidated.drop(columns=['groups']).to_dict(orient='records'))
     final_df = pd.DataFrame(result_rows)
     final_df.rename(columns={'type': 'shortName'}, inplace=True)
     return final_df

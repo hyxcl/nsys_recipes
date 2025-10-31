@@ -58,7 +58,9 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         # merge by type
         type_merge_df = overlap.merge_by_type(kernel_df)
         type_merge_df['overlap_sum'] = overlap.calculate_overlap_sum(type_merge_df)
-
+        comm_stream_type_merge_df = overlap.merge_by_type(nccl_kernel_df, streamid=True)
+        comm_stream_type_merge_df['overlap_sum'] = overlap.calculate_overlap_sum(comm_stream_type_merge_df, type_merge_df[type_merge_df['shortName'] == 'compute'])
+        type_merge_df = pd.concat([type_merge_df, comm_stream_type_merge_df], ignore_index=True)
         # merge by name
         nccl_df_merge = overlap.merge_overlapping_ranges_by_name(nccl_kernel_df, self_overlapped_duration=parsed_args.self_overlap)
         compute_df_merge = overlap.merge_overlapping_ranges_by_name(compute_kernel_df, self_overlapped_duration=parsed_args.self_overlap)
@@ -197,17 +199,23 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         type_merge_df = pd.concat(type_merge_dfs)
         type_merge_df["Duration"] = type_merge_df["end"] - type_merge_df["start"]
         type_merge_df["shortName"] = type_merge_df["shortName"].replace("nccl", "Communication")
-        type_merge_df = type_merge_df.groupby("shortName")
+        type_merge_df = type_merge_df.groupby(["streamId","shortName"])
         type_merge_df_duration = type_merge_df["Duration"].sum()
-        type_merge_df_compute_sum = type_merge_df["overlap_sum"].sum()
+        type_merge_df_overlap_sum = type_merge_df["overlap_sum"].sum()
+        total_duration = type_merge_df_duration.loc["all"].sum() - type_merge_df_overlap_sum.loc[("all","compute")]
+        exposed_compute_ratio = 100*type_merge_df_duration.loc[("all","compute")]/total_duration
+        exposed_ratio = (type_merge_df_duration - type_merge_df_overlap_sum)/total_duration * 100
+        exposed_ratio.loc[('all','compute')] = exposed_compute_ratio
         grouped_type_merge_df = pd.DataFrame(
             {
                 "Duration": type_merge_df_duration,
-                "Overlapped Duration": type_merge_df_compute_sum,
-                "Overlapped Percentage": type_merge_df_compute_sum / type_merge_df_duration * 100,
+                "Overlapped Duration": type_merge_df_overlap_sum,
+                "Overlapped Percentage": type_merge_df_overlap_sum / type_merge_df_duration * 100,
+                "Exposed Percentage": exposed_ratio,
             }
         ).round(1)
-
+        grouped_type_merge_df = grouped_type_merge_df.reset_index(level='shortName')
+        grouped_type_merge_df.index = grouped_type_merge_df.index.astype(str)
         grouped_type_merge_df.to_parquet(self.add_output_file("grouped_type_merge_df.parquet"))
 
         # name merge df
