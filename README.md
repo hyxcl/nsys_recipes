@@ -37,7 +37,7 @@ Before using the recipes, I strongly recommended you to read the following:
 clone this repository and add it to the package
 ```
 git clone git@github.com:hyxcl/nsys_recipes.git
-sudo rsync -aPp nsys_recipes/lib/overlap.py /opt/nvidia/nsight-systems/2025.3.1/target-linux-x64/python/packages/nsys_recipe/lib/overlap.py
+sudo rsync -aPp nsys_recipes/lib/* /opt/nvidia/nsight-systems/2025.3.1/target-linux-x64/python/packages/nsys_recipe/lib/
 sudo rsync -aPp nsys_recipes/recipes/ /opt/nvidia/nsight-systems/2025.3.1/target-linux-x64/python/packages/nsys_recipe/recipes/
 ```
 
@@ -47,7 +47,7 @@ nsys recipe nccl_gpu_overlap_trace --input ./profile/ --output ./output/nccl_gpu
 ```
 or
 ```
-nsys recipe nccl_gpu_overlap_trace --input ./profile/ --output ./output/nccl_gpu_overlap_trace -self-overlap
+nsys recipe nccl_gpu_overlap_trace --input ./profile/ --output ./output/nccl_gpu_overlap_trace --self-overlap
 ```
 
 the `--self-overlap` is optional, it will compuet the overlaped duration of the same named kernel, if add, it will takes much more time.
