@@ -1,0 +1,7 @@
+{
+    "module_name": "kernel_overlap_trace",
+    "display_name": "GPU Kernel Overlap Trace",
+    "description": [
+        "This recipe calculates the percentage of overlap for all kernels"
+    ]
+}
