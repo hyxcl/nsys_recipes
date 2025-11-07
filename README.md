@@ -4,12 +4,15 @@ these recipes are a supplement to nsight system‘s build in multi-report recipe
 this recipe is tested in nsight systems version 25.3.1
 previous nsys_recipes in tag nsys24 can't be used in nsys25.
 
-currently we have 1 custom recipe. 
-**nccl_gpu_overlap_trace**: 
+currently we have 2 custom recipe.   
+**nccl_gpu_overlap_trace**:   
 the nccl_gpu_overlap_trace is modified version from original nccl_gpu_overlap_trace, add some new static.
 - communication compute overall 
 - Grouped Traces
 - Kernel overlao matrix
+
+**kernel_overlap_trace**:   
+if your nsys timeline has no nccl or deepep kernels, you will have some error in nccl_gpu_overlap_trace, in this case, you can use kernel_overlap_trace to see the kernel overlap matrix. it's same with nccl_gpu_overlap_trace's kernel overlap matrix.
 
 1. communication compute overall, a example output like bellow:
 in this part, compute, communication and overlap duration can be considered as a projection duration. for example if 2 communication kernel has some overlap, the duration is considered only once in nccl. and the overlaped duration is the overlaped duration across compute and communication.

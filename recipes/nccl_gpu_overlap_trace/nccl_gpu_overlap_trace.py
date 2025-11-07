@@ -48,7 +48,7 @@ class NcclGpuTimeUtilMap(recipe.Recipe):
         compute_kernel_df = kernel_df[kernel_df["type"] == "compute"]
 
         if nccl_kernel_df.empty:
-            logger.info(f"{report_path}: Report does not contain any NCCL kernels.")
+            logger.info(f"{report_path}: Report does not contain any NCCL or DeepEP kernels. in this case, if you want to see kernel overlap matrix, you can use kernel_overlap_trace recipe.")
             return None
 
         kernel_grouped = kernel_df.groupby(["pid", "deviceId"])
